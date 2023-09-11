@@ -11,6 +11,18 @@ interface ExpenseItem {
   date: string;
 }
 
+// sortKey and sortOrder enums for sorting expenses
+enum SortKey {
+  NAME = "name",
+  PRICE = "price",
+  DATE = "date",
+}
+
+enum SortOrder {
+  ASC = "asc",
+  DESC = "desc",
+}
+
 function App() {
   // Initialize state for expenses from localStorage
   let initialExpenses: ExpenseItem[] = [];
@@ -31,8 +43,8 @@ function App() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [itemsBeingDeleted, setItemsBeingDeleted] = useState<string[]>([]);
-  const [sortKey, setSortKey] = useState<"name" | "price" | "date">("date");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [sortKey, setSortKey] = useState<SortKey>(SortKey.DATE);
+  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Save expenses to localStorage whenever they change
@@ -217,26 +229,60 @@ function App() {
               >
                 <span>{expense.name}</span>
                 <span>${expense.price}</span>
-                <span onClick={() => filterByDate(expense.date)} className="date">
+                <span
+                  onClick={() => filterByDate(expense.date)}
+                  className="date"
+                >
                   {formatDate(expense.date)}
                 </span>
                 <span>
-                  <span role="img" aria-label="Edit Expense" onClick={() => editExpense(expense.id)}>✏️</span>
-                  <span role="img" aria-label="Delete Expense" onClick={() => deleteExpense(expense.id)}>🗑️</span>
+                  <span
+                    role="img"
+                    aria-label="Edit Expense"
+                    onClick={() => editExpense(expense.id)}
+                  >
+                    ✏️
+                  </span>
+                  <span
+                    role="img"
+                    aria-label="Delete Expense"
+                    onClick={() => deleteExpense(expense.id)}
+                  >
+                    🗑️
+                  </span>
                 </span>
               </li>
             ))}
           </ul>
-          <h2> Total Expense: {(selectedDate || searchQuery) && (<><span>${getFilteredTotalExpense()}</span> of </>)} ${getTotalExpense()}</h2>
+          <h2>
+            {" "}
+            Total Expense:{" "}
+            {(selectedDate || searchQuery) && (
+              <>
+                <span>${getFilteredTotalExpense()}</span> of{" "}
+              </>
+            )}{" "}
+            ${getTotalExpense()}
+          </h2>
           <div className="sort-order">
-            <select title="Sort" className="minimal" onChange={(e) => setSortKey(e.target.value as "name" | "price" | "date") } value={sortKey}>
-              <option value="name">Sort by Name</option>
-              <option value="price">Sort by Price</option>
-              <option value="date">Sort by Date</option>
+            <select
+              title="Sort"
+              className="minimal"
+              onChange={(e) => setSortKey(e.target.value as SortKey)}
+              value={sortKey}
+            >
+              <option value={SortKey.NAME}>Sort by Name</option>
+              <option value={SortKey.PRICE}>Sort by Price</option>
+              <option value={SortKey.DATE}>Sort by Date</option>
             </select>
-            <select title="Order" className="minimal" onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")} value={sortOrder}>
-              <option value="asc">Ascending</option>
-              <option value="desc">Descending</option>
+            <select
+              title="Order"
+              className="minimal"
+              onChange={(e) => setSortOrder(e.target.value as SortOrder)}
+              value={sortOrder}
+            >
+              <option value={SortOrder.ASC}>Ascending</option>
+              <option value={SortOrder.DESC}>Descending</option>
             </select>
           </div>
         </>
