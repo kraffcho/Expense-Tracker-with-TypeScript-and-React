@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { getCurrentDateStringUtil } from "./utils";
+import { getCurrentDateStringUtil } from "./utils/formatDate";
+import { loadExpensesFromLocalStorage, saveExpensesToLocalStorage, } from "./utils/localStorageUtil";
+import { calculateTotalExpense } from "./utils/calculationUtil";
+import { getSortedAndFilteredExpenses } from "./utils/filterUtil";
+import { SortKey, SortOrder } from "./utils/enum";
 import ExpenseList from "./components/ExpenseList";
 import ExpenseForm from "./components/ExpenseForm";
 import SearchBar from "./components/SearchBar";
@@ -16,27 +20,9 @@ export interface ExpenseItem {
   date: string;
 }
 
-// sortKey and sortOrder enums for sorting expenses
-enum SortKey {
-  NAME = "name",
-  PRICE = "price",
-  DATE = "date",
-}
-
-enum SortOrder {
-  ASC = "asc",
-  DESC = "desc",
-}
-
 function App() {
   // Initialize state for expenses from localStorage
-  let initialExpenses: ExpenseItem[] = [];
-  try {
-    initialExpenses = JSON.parse(localStorage.getItem("expenses") || "[]");
-  } catch (error) {
-    // Log parsing errors
-    console.error("Could not parse expenses from localStorage:", error);
-  }
+  let initialExpenses: ExpenseItem[] = loadExpensesFromLocalStorage();
 
   // Declare state variables
   const [expenses, setExpenses] = useState<ExpenseItem[]>(initialExpenses);
@@ -54,11 +40,7 @@ function App() {
 
   // Save expenses to localStorage whenever they change
   useEffect(() => {
-    try {
-      localStorage.setItem("expenses", JSON.stringify(expenses));
-    } catch (error) {
-      console.error("Could not save expenses to localStorage:", error);
-    }
+    saveExpensesToLocalStorage(expenses);
   }, [expenses]);
 
   // Reset form fields after adding/updating an expense
@@ -147,14 +129,7 @@ function App() {
   };
 
   // Calculate the total expenses by summing up the 'price' of all ExpenseItems
-  const getTotalExpense = () =>
-    expenses.reduce((total, item) => total + item.price, 0).toFixed(2);
-
-  // Calculate the total expenses for filtered and sorted items only
-  const getFilteredTotalExpense = () =>
-    sortedAndFilteredExpenses
-      .reduce((total, item) => total + item.price, 0)
-      .toFixed(2);
+  const totalExpenses = calculateTotalExpense(expenses);
 
   // Function to filter expenses by the selected date
   const filterByDate = (date: string) => {
@@ -167,16 +142,18 @@ function App() {
   };
 
   // Filter and sort expenses based on search query and sort options
-  const sortedAndFilteredExpenses = expenses
-    .filter((expense) =>
-      expense.name.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .filter((expense) => (selectedDate ? expense.date === selectedDate : true))
-    .sort((a, b) => {
-      if (a[sortKey] < b[sortKey]) return sortOrder === "asc" ? -1 : 1;
-      if (a[sortKey] > b[sortKey]) return sortOrder === "asc" ? 1 : -1;
-      return 0;
-    });
+  const sortedAndFilteredExpenses = getSortedAndFilteredExpenses(
+    expenses,
+    searchQuery,
+    selectedDate,
+    sortKey,
+    sortOrder
+  );
+
+  // Calculate the total expenses for filtered and sorted items only
+  const filteredTotalExpenses = calculateTotalExpense(
+    sortedAndFilteredExpenses
+  );
 
   // Check if the form is valid before submission (name and price are required)
   const isFormValid = Boolean(name && price !== null && price > 0);
@@ -205,8 +182,8 @@ function App() {
             onDateFilter={filterByDate}
           />
           <TotalExpense
-            totalExpenses={getTotalExpense()}
-            filteredExpenses={getFilteredTotalExpense()}
+            totalExpenses={totalExpenses}
+            filteredExpenses={filteredTotalExpenses}
             hasFilters={!!(selectedDate || searchQuery)}
           />
           <SortOptions

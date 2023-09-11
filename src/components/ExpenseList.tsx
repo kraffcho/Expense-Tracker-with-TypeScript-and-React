@@ -1,6 +1,6 @@
 import React from "react";
 import { ExpenseItem } from "../App";
-import { formatDateUtil } from "../utils";
+import { formatDateUtil } from "../utils/formatDate";
 
 type ExpenseListProps = {
   expenses: ExpenseItem[];
