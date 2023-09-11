@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { format, isToday, isYesterday } from "date-fns";
+import { formatDateUtil, getCurrentDateStringUtil } from "./utils";
 import { v4 as uuidv4 } from "uuid";
 import "./App.scss";
 
@@ -38,7 +38,7 @@ function App() {
   const [name, setName] = useState<string>("");
   const nameInputRef = useRef<HTMLInputElement>(null);
   const [price, setPrice] = useState<number | null>(null);
-  const getCurrentDateString = () => format(new Date(), "yyyy-MM-dd");
+  const getCurrentDateString = () => getCurrentDateStringUtil();
   const [date, setDate] = useState<string>(getCurrentDateString());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -161,16 +161,9 @@ function App() {
     setSelectedDate(null);
   };
 
-  // Date formatter using date-fns
+  // Function to format a date string
   const formatDate = (dateString: string) => {
-    const dateObj = new Date(dateString);
-    if (isToday(dateObj)) {
-      return "Today";
-    } else if (isYesterday(dateObj)) {
-      return "Yesterday";
-    } else {
-      return format(dateObj, "dd/MM/yyyy");
-    }
+    return formatDateUtil(dateString);
   };
 
   // Check if the form is valid before submission (name and price are required)
