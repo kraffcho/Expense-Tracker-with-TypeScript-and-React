@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { format, isToday, isYesterday } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
-import "./App.css";
+import "./App.scss";
 
 // Define the ExpenseItem interface for type safety
 interface ExpenseItem {
@@ -217,65 +217,24 @@ function App() {
               >
                 <span>{expense.name}</span>
                 <span>${expense.price}</span>
-                <span
-                  onClick={() => filterByDate(expense.date)}
-                  className="date"
-                >
-                  {" "}
-                  {formatDate(expense.date)}{" "}
+                <span onClick={() => filterByDate(expense.date)} className="date">
+                  {formatDate(expense.date)}
                 </span>
                 <span>
-                  {" "}
-                  <span
-                    role="img"
-                    aria-label="Edit Expense"
-                    onClick={() => editExpense(expense.id)}
-                  >
-                    {" "}
-                    ✏️{" "}
-                  </span>
-                  <span
-                    role="img"
-                    aria-label="Delete Expense"
-                    onClick={() => deleteExpense(expense.id)}
-                  >
-                    {" "}
-                    🗑️{" "}
-                  </span>
+                  <span role="img" aria-label="Edit Expense" onClick={() => editExpense(expense.id)}>✏️</span>
+                  <span role="img" aria-label="Delete Expense" onClick={() => deleteExpense(expense.id)}>🗑️</span>
                 </span>
               </li>
             ))}
           </ul>
-          <h2>
-            {" "}
-            Total Expense:{" "}
-            {(selectedDate || searchQuery) && (
-              <>
-                {" "}
-                <span>${getFilteredTotalExpense()}</span> of{" "}
-              </>
-            )}{" "}
-            ${getTotalExpense()}{" "}
-          </h2>
+          <h2> Total Expense: {(selectedDate || searchQuery) && (<><span>${getFilteredTotalExpense()}</span> of </>)} ${getTotalExpense()}</h2>
           <div className="sort-order">
-            <select
-              title="Sort"
-              className="minimal"
-              onChange={(e) =>
-                setSortKey(e.target.value as "name" | "price" | "date")
-              }
-              value={sortKey}
-            >
+            <select title="Sort" className="minimal" onChange={(e) => setSortKey(e.target.value as "name" | "price" | "date") } value={sortKey}>
               <option value="name">Sort by Name</option>
               <option value="price">Sort by Price</option>
               <option value="date">Sort by Date</option>
             </select>
-            <select
-              title="Order"
-              className="minimal"
-              onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
-              value={sortOrder}
-            >
+            <select title="Order" className="minimal" onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")} value={sortOrder}>
               <option value="asc">Ascending</option>
               <option value="desc">Descending</option>
             </select>

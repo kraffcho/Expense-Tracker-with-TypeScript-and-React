@@ -26,10 +26,10 @@ body {
   justify-content: center;
   gap: 10px;
   margin-top: 10px;
-}
 
-.expenses-form > div > input {
-  width: 100%;
+  >div>input {
+    width: 100%;
+  }
 }
 
 .search-form {
@@ -37,10 +37,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-}
 
-.search-form > * {
-  flex: 1;
+  >* {
+    flex: 1;
+  }
 }
 
 .sort-order {
@@ -49,10 +49,10 @@ body {
   gap: 10px;
   align-items: center;
   justify-content: space-between;
-}
 
-.sort-order > * {
-  flex: 1;
+  >* {
+    flex: 1;
+  }
 }
 
 h1 {
@@ -69,10 +69,10 @@ h2 {
   text-align: center;
   font-weight: 600;
   color: #d9534f;
-}
 
-h2 span {
-  color: #333;
+  span {
+    color: #333;
+  }
 }
 
 input,
@@ -81,8 +81,7 @@ select {
   font-family: "Saira Condensed", sans-serif;
 }
 
-input,
-select {
+input {
   padding: 4px 10px;
   font-size: 16px;
   border-radius: 4px;
@@ -97,41 +96,38 @@ select {
   appearance: none;
 }
 
-select.minimal {
-  background-image:
-    linear-gradient(45deg, transparent 50%, #aaa 50%),
-    linear-gradient(135deg, #aaa 50%, transparent 50%),
-    linear-gradient(to right, #ccc, #ccc);
-  background-position:
-    calc(100% - 15px) calc(.9em + 2px),
-    calc(100% - 10px) calc(.9em + 2px),
-    calc(100% - 2em) 0.4em;
-  background-size:
-    5px 5px,
-    5px 5px,
-    1px 1.4em;
-  background-repeat: no-repeat;
-}
+select {
+  padding: 4px 10px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  outline-color: #007bff;
+  height: 36px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 
-select.minimal:focus {
-  background-image:
-    linear-gradient(45deg, #555 50%, transparent 50%),
-    linear-gradient(135deg, transparent 50%, #555 50%),
-    linear-gradient(to right, #ccc, #ccc);
-  background-position:
-    calc(100% - 10px) .9em,
-    calc(100% - 15px) .9em,
-    calc(100% - 2em) 0.4em;
-  background-size:
-    5px 5px,
-    5px 5px,
-    1px 1.4em;
-  background-repeat: no-repeat;
-}
+  &.minimal {
+    background-image: linear-gradient(45deg, transparent 50%, #aaa 50%), linear-gradient(135deg, #aaa 50%, transparent 50%), linear-gradient(to right, #ccc, #ccc);
+    background-position: calc(100% - 15px) calc(.9em + 2px), calc(100% - 10px) calc(.9em + 2px), calc(100% - 2em) 0.4em;
+    background-size: 5px 5px, 5px 5px, 1px 1.4em;
+    background-repeat: no-repeat;
 
-select:-moz-focusring {
-  color: transparent;
-  text-shadow: 0 0 0 #000;
+    &:focus {
+      background-image: linear-gradient(45deg, #555 50%, transparent 50%), linear-gradient(135deg, transparent 50%, #555 50%), linear-gradient(to right, #ccc, #ccc);
+      background-position: calc(100% - 10px) 0.9em, calc(100% - 15px) 0.9em, calc(100% - 2em) 0.4em;
+      background-size: 5px 5px, 5px 5px, 1px 1.4em;
+      background-repeat: no-repeat;
+    }
+  }
+
+  &:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+  }
 }
 
 .filters {
@@ -139,10 +135,10 @@ select:-moz-focusring {
   gap: 10px;
   align-items: center;
   justify-content: space-between;
-}
 
-.filters > * {
-  flex: 1;
+  >* {
+    flex: 1;
+  }
 }
 
 button {
@@ -156,16 +152,16 @@ button {
   outline-color: #555;
   height: 36px;
   transition: 300ms;
-}
 
-button:hover {
-  background-color: #0056b3;
-}
+  &:hover {
+    background-color: #0056b3;
+  }
 
-button:disabled {
-  background-color: #ccc;
-  border-color: #888;
-  cursor: not-allowed;
+  &:disabled {
+    background-color: #ccc;
+    border-color: #888;
+    cursor: not-allowed;
+  }
 }
 
 ul {
@@ -184,42 +180,42 @@ li {
   padding: 6px 8px;
   line-height: 1;
   border-bottom: 1px solid #ccc;
-}
 
-li.heading {
-  padding: 10px 8px;
-  font-weight: 600;
-  color: #333;
-  background: #fff;
-}
+  &.heading {
+    padding: 10px 8px;
+    font-weight: 600;
+    color: #333;
+    background: #fff;
+  }
 
-li > span {
-  text-align: left;
-}
+  >span {
+    text-align: left;
 
-li > span:nth-child(3n) {
-  width: 75px;
-}
+    &:nth-child(3n) {
+      width: 75px;
+    }
 
-li > span:nth-last-child(2) {
-  min-width: 65px;
-  text-align: right;
-}
+    &:nth-last-child(2) {
+      min-width: 65px;
+      text-align: right;
+    }
 
-li>span:last-child {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  gap: 3px;
-  min-width: 50px;
-}
+    &:last-child {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 3px;
+      min-width: 50px;
+    }
+  }
 
-li:last-child {
-  border-bottom: none;
-}
+  &:last-child {
+    border-bottom: none;
+  }
 
-li:nth-child(even) {
-  background: #eee;
+  &:nth-child(even) {
+    background: #eee;
+  }
 }
 
 span[role="img"] {
@@ -231,13 +227,15 @@ span[role="img"] {
   border-radius: 4px;
   text-align: center;
   transition: 300ms;
+
+  &:hover {
+    border-color: #999;
+  }
+
+  cursor: pointer;
 }
 
-span[role="img"]:hover {
-  border-color: #999;
-}
-
-span[role="img"], .date {
+.date {
   cursor: pointer;
 }
 
@@ -268,6 +266,7 @@ span[role="img"], .date {
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }
