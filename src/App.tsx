@@ -1,10 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { formatDateUtil, getCurrentDateStringUtil } from "./utils";
 import { v4 as uuidv4 } from "uuid";
+import { getCurrentDateStringUtil } from "./utils";
+import ExpenseList from "./components/ExpenseList";
+import ExpenseForm from "./components/ExpenseForm";
+import SearchBar from "./components/SearchBar";
+import TotalExpense from "./components/TotalExpense";
+import SortOptions from "./components/SortOptions";
 import "./App.scss";
 
 // Define the ExpenseItem interface for type safety
-interface ExpenseItem {
+export interface ExpenseItem {
   id: string;
   name: string;
   price: number;
@@ -161,14 +166,6 @@ function App() {
     setSelectedDate(null);
   };
 
-  // Function to format a date string
-  const formatDate = (dateString: string) => {
-    return formatDateUtil(dateString);
-  };
-
-  // Check if the form is valid before submission (name and price are required)
-  const isFormValid = name && price !== null && price > 0;
-
   // Filter and sort expenses based on search query and sort options
   const sortedAndFilteredExpenses = expenses
     .filter((expense) =>
@@ -181,19 +178,13 @@ function App() {
       return 0;
     });
 
+  // Check if the form is valid before submission (name and price are required)
+  const isFormValid = Boolean(name && price !== null && price > 0);
+
   return (
     <div className="App">
       <h1>Expense Tracker with TypeScript and React</h1>
-      <div className="search-form">
-        <input
-          type="text"
-          placeholder="Filter by name or click on date to filter by date"
-          className="filter-input"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
-
+      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       {sortedAndFilteredExpenses.length > 0 ? (
         <>
           {(selectedDate || searchQuery) && (
@@ -206,78 +197,24 @@ function App() {
               )}
             </div>
           )}
-          <ul>
-            <li className="heading">
-              <span>Name</span>
-              <span>Price</span>
-              <span>Date</span>
-              <span>Actions</span>
-            </li>
-            {sortedAndFilteredExpenses.map((expense) => (
-              <li
-                key={expense.id}
-                className={
-                  itemsBeingDeleted.includes(expense.id) ? "fade-out" : ""
-                }
-              >
-                <span>{expense.name}</span>
-                <span>${expense.price}</span>
-                <span
-                  onClick={() => filterByDate(expense.date)}
-                  className="date"
-                >
-                  {formatDate(expense.date)}
-                </span>
-                <span>
-                  <span
-                    role="img"
-                    aria-label="Edit Expense"
-                    onClick={() => editExpense(expense.id)}
-                  >
-                    ✏️
-                  </span>
-                  <span
-                    role="img"
-                    aria-label="Delete Expense"
-                    onClick={() => deleteExpense(expense.id)}
-                  >
-                    🗑️
-                  </span>
-                </span>
-              </li>
-            ))}
-          </ul>
-          <h2>
-            {" "}
-            Total Expense:{" "}
-            {(selectedDate || searchQuery) && (
-              <>
-                <span>${getFilteredTotalExpense()}</span> of{" "}
-              </>
-            )}{" "}
-            ${getTotalExpense()}
-          </h2>
-          <div className="sort-order">
-            <select
-              title="Sort"
-              className="minimal"
-              onChange={(e) => setSortKey(e.target.value as SortKey)}
-              value={sortKey}
-            >
-              <option value={SortKey.NAME}>Sort by Name</option>
-              <option value={SortKey.PRICE}>Sort by Price</option>
-              <option value={SortKey.DATE}>Sort by Date</option>
-            </select>
-            <select
-              title="Order"
-              className="minimal"
-              onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-              value={sortOrder}
-            >
-              <option value={SortOrder.ASC}>Ascending</option>
-              <option value={SortOrder.DESC}>Descending</option>
-            </select>
-          </div>
+          <ExpenseList
+            expenses={sortedAndFilteredExpenses}
+            itemsBeingDeleted={itemsBeingDeleted}
+            onDelete={deleteExpense}
+            onEdit={editExpense}
+            onDateFilter={filterByDate}
+          />
+          <TotalExpense
+            totalExpenses={getTotalExpense()}
+            filteredExpenses={getFilteredTotalExpense()}
+            hasFilters={!!(selectedDate || searchQuery)}
+          />
+          <SortOptions
+            sortKey={sortKey}
+            sortOrder={sortOrder}
+            setSortKey={setSortKey}
+            setSortOrder={setSortOrder}
+          />
         </>
       ) : searchQuery ? (
         <p className="no-results">
@@ -289,52 +226,18 @@ function App() {
       ) : (
         <p>No expenses added yet.</p>
       )}
-      <div className="expenses-form">
-        <div>
-          <label htmlFor="nameInput" className="visually-hidden">
-            Name
-          </label>
-          <input
-            ref={nameInputRef}
-            id="nameInput"
-            type="text"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="priceInput" className="visually-hidden">
-            Price
-          </label>
-          <input
-            id="priceInput"
-            type="number"
-            placeholder="Price"
-            min="0"
-            value={price || ""}
-            onChange={(e) => setPrice(Math.max(0, Number(e.target.value)))}
-          />
-        </div>
-        <div>
-          <label htmlFor="dateInput" className="visually-hidden">
-            Date
-          </label>
-          <input
-            id="dateInput"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-        </div>
-        <button disabled={!isFormValid} onClick={addOrUpdateExpense}>
-          {isFormValid
-            ? editingId
-              ? "Update"
-              : "Add to List"
-            : "Fill all fields"}
-        </button>
-      </div>
+      <ExpenseForm
+        name={name}
+        price={price}
+        date={date}
+        isFormValid={isFormValid}
+        editingId={editingId}
+        setName={setName}
+        setPrice={setPrice}
+        setDate={setDate}
+        addOrUpdateExpense={addOrUpdateExpense}
+        getCurrentDateString={getCurrentDateString}
+      />
     </div>
   );
 }
