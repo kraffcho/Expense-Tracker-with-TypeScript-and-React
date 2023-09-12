@@ -106,12 +106,3 @@ Contributions are what make the open-source community such an amazing place to l
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
----
-
-## Acknowledgments
-
-- [React Docs](https://reactjs.org/docs/getting-started.html)
-- [TypeScript Docs](https://www.typescriptlang.org/docs/)
-- [date-fns](https://date-fns.org/docs/Getting-Started)
-- [uuid](https://github.com/uuidjs/uuid#readme)
