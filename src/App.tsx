@@ -5,6 +5,7 @@ import { loadExpensesFromLocalStorage, saveExpensesToLocalStorage, } from "./uti
 import { calculateTotalExpense } from "./utils/calculationUtil";
 import { getSortedAndFilteredExpenses } from "./utils/filterUtil";
 import { SortKey, SortOrder } from "./utils/enum";
+import { useLoading } from "./hooks/useLoading";
 import ExpenseList from "./components/ExpenseList";
 import ExpenseForm from "./components/ExpenseForm";
 import SearchBar from "./components/SearchBar";
@@ -38,6 +39,17 @@ function App() {
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
+  const { isLoading, startLoading, stopLoading } = useLoading();
+  // Simulate loading for 1 second
+  useEffect(() => {
+    startLoading();
+    // Simulated API call or other asynchronous operation
+    setTimeout(() => {
+      // Do something
+      stopLoading();
+    }, 1000);
+  }, [startLoading, stopLoading]);
+
   // Save expenses to localStorage whenever they change
   useEffect(() => {
     saveExpensesToLocalStorage(expenses);
@@ -60,7 +72,6 @@ function App() {
       if (formElement) {
         formElement.scrollIntoView({ behavior: "smooth" });
         formElement.classList.add("animated-outline");
-
         // Remove the animated class after 3 seconds
         setTimeout(() => {
           formElement.classList.remove("animated-outline");
@@ -94,7 +105,6 @@ function App() {
     }
     // Reset form after add/update operation
     resetForm();
-
     // If the item was updated, clear the date filter
     if (updated) {
       clearDateFilter();
@@ -116,7 +126,7 @@ function App() {
     }, 500);
   };
 
-  // Edit an expense
+  // Edit an expense by populating the form fields with the expense data
   const editExpense = (id: string) => {
     const expenseToEdit = expenses.find((expense) => expense.id === id);
     if (expenseToEdit) {
@@ -124,7 +134,8 @@ function App() {
       setPrice(expenseToEdit.price);
       setDate(expenseToEdit.date);
       setEditingId(id);
-      nameInputRef.current?.focus(); // Focus on the name input field
+      // Focus on the name input field when editing an expense
+      nameInputRef.current?.focus();
     }
   };
 
@@ -161,60 +172,71 @@ function App() {
   return (
     <div className="App">
       <h1>Expense Tracker with TypeScript and React</h1>
-      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-      {sortedAndFilteredExpenses.length > 0 ? (
+      <SearchBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
+      {isLoading ? (
+        <div>Loading data...</div>
+      ) : (
         <>
-          {(selectedDate || searchQuery) && (
-            <div className="filters">
-              {searchQuery && (
-                <button onClick={() => setSearchQuery("")}>Clear Search</button>
+          {sortedAndFilteredExpenses.length > 0 ? (
+            <>
+              {(selectedDate || searchQuery) && (
+                <div className="filters">
+                  {searchQuery && (
+                    <button onClick={() => setSearchQuery("")}>
+                      Clear Search
+                    </button>
+                  )}
+                  {selectedDate && (
+                    <button onClick={clearDateFilter}>Clear Date Filter</button>
+                  )}
+                </div>
               )}
-              {selectedDate && (
-                <button onClick={clearDateFilter}>Clear Date Filter</button>
-              )}
-            </div>
+              <ExpenseList
+                expenses={sortedAndFilteredExpenses}
+                itemsBeingDeleted={itemsBeingDeleted}
+                onDelete={deleteExpense}
+                onEdit={editExpense}
+                onDateFilter={filterByDate}
+              />
+              <TotalExpense
+                totalExpenses={totalExpenses}
+                filteredExpenses={filteredTotalExpenses}
+                hasFilters={!!(selectedDate || searchQuery)}
+              />
+              <SortOptions
+                sortKey={sortKey}
+                sortOrder={sortOrder}
+                setSortKey={setSortKey}
+                setSortOrder={setSortOrder}
+              />
+            </>
+          ) : searchQuery ? (
+            <p className="no-results">
+              <span>
+                🔎 No results found for "<strong>{searchQuery}</strong>".
+              </span>
+              <button onClick={() => setSearchQuery("")}>Clear Search</button>
+            </p>
+          ) : (
+            <p>No expenses added yet.</p>
           )}
-          <ExpenseList
-            expenses={sortedAndFilteredExpenses}
-            itemsBeingDeleted={itemsBeingDeleted}
-            onDelete={deleteExpense}
-            onEdit={editExpense}
-            onDateFilter={filterByDate}
-          />
-          <TotalExpense
-            totalExpenses={totalExpenses}
-            filteredExpenses={filteredTotalExpenses}
-            hasFilters={!!(selectedDate || searchQuery)}
-          />
-          <SortOptions
-            sortKey={sortKey}
-            sortOrder={sortOrder}
-            setSortKey={setSortKey}
-            setSortOrder={setSortOrder}
+          <ExpenseForm
+            name={name}
+            price={price}
+            date={date}
+            isFormValid={isFormValid}
+            editingId={editingId}
+            setName={setName}
+            setPrice={setPrice}
+            setDate={setDate}
+            addOrUpdateExpense={addOrUpdateExpense}
+            getCurrentDateString={getCurrentDateString}
           />
         </>
-      ) : searchQuery ? (
-        <p className="no-results">
-          <span>
-            🔎 No results found for "<strong>{searchQuery}</strong>".
-          </span>
-          <button onClick={() => setSearchQuery("")}>Clear Search</button>
-        </p>
-      ) : (
-        <p>No expenses added yet.</p>
       )}
-      <ExpenseForm
-        name={name}
-        price={price}
-        date={date}
-        isFormValid={isFormValid}
-        editingId={editingId}
-        setName={setName}
-        setPrice={setPrice}
-        setDate={setDate}
-        addOrUpdateExpense={addOrUpdateExpense}
-        getCurrentDateString={getCurrentDateString}
-      />
     </div>
   );
 }
