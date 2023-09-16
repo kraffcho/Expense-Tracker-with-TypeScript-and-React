@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, KeyboardEvent } from "react";
 
 interface ExpenseFormProps {
   name: string;
@@ -12,7 +12,7 @@ interface ExpenseFormProps {
   addOrUpdateExpense: () => void;
   getCurrentDateString: () => string;
 }
-
+// ExpenseForm component is responsible for rendering the form and adding or editing an expense
 const ExpenseForm: React.FC<ExpenseFormProps> = ({
   name,
   price,
@@ -27,11 +27,31 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
 }) => {
   const nameInputRef = useRef<HTMLInputElement>(null);
 
+  // Focus on name input when in editing mode
   useEffect(() => {
     if (editingId) {
       nameInputRef.current?.focus();
     }
   }, [editingId]);
+
+  // Focus on name input whenever a new item is successfully added
+  useEffect(() => {
+    if (
+      !editingId &&
+      name === "" &&
+      price === null &&
+      date === getCurrentDateString()
+    ) {
+      nameInputRef.current?.focus();
+    }
+  }, [name, price, date, editingId, getCurrentDateString]);
+
+  // Add or update an existing expense when the user presses Enter
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && isFormValid) {
+      addOrUpdateExpense();
+    }
+  };
 
   return (
     <div className="expenses-form">
@@ -46,6 +66,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
       </div>
       <div>
@@ -59,6 +80,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
           min="0"
           value={price || ""}
           onChange={(e) => setPrice(Math.max(0, Number(e.target.value)))}
+          onKeyDown={handleKeyDown}
         />
       </div>
       <div>
@@ -70,6 +92,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
       </div>
       <button disabled={!isFormValid} onClick={addOrUpdateExpense}>

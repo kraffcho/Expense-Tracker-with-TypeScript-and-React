@@ -21,6 +21,9 @@ export interface ExpenseItem {
   date: string;
 }
 
+const savedTheme = localStorage.getItem("theme") || "light";
+document.documentElement.setAttribute("data-theme", savedTheme);
+
 function App() {
   // Initialize state for expenses from localStorage
   let initialExpenses: ExpenseItem[] = loadExpensesFromLocalStorage();
@@ -38,8 +41,10 @@ function App() {
   const [sortKey, setSortKey] = useState<SortKey>(SortKey.DATE);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [searchQuery, setSearchQuery] = useState<string>("");
-
+  const [isDarkMode, setIsDarkMode] = useState(savedTheme === "dark");
+  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
   const { isLoading, startLoading, stopLoading } = useLoading();
+
   // Simulate loading for 1 second
   useEffect(() => {
     startLoading();
@@ -49,6 +54,23 @@ function App() {
       stopLoading();
     }, 1000);
   }, [startLoading, stopLoading]);
+
+useEffect(() => {
+  // Load theme preference from localStorage or default to 'light'
+  const savedTheme = localStorage.getItem("theme") || "light";
+  const isDark = savedTheme === "dark";
+  setIsDarkMode(isDark);
+
+  // IMPORTANT: Set the attribute to make sure it's applied on initial load
+  document.documentElement.setAttribute("data-theme", savedTheme);
+}, []);
+
+  useEffect(() => {
+    // Save theme preference to localStorage
+    const theme = isDarkMode ? "dark" : "light";
+    localStorage.setItem("theme", theme);
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [isDarkMode]);
 
   // Save expenses to localStorage whenever they change
   useEffect(() => {
@@ -172,10 +194,7 @@ function App() {
   return (
     <div className="App">
       <h1>Expense Tracker with TypeScript and React</h1>
-      <SearchBar
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
+      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       {isLoading ? (
         <div>Loading data...</div>
       ) : (
@@ -237,6 +256,9 @@ function App() {
           />
         </>
       )}
+      <button className="toggle-theme" onClick={toggleDarkMode}>
+        Dark Mode: {isDarkMode ? "On" : "Off"}
+      </button>
     </div>
   );
 }
