@@ -2,7 +2,7 @@
 
 _An elegant and efficient Expense Tracker built with React and TypeScript_
 
-<img src="https://i.ibb.co/d0PMnWh/expense-tracker.png" alt="Expense Tracker Preview" width="500" height="500">
+<a href="https://zg63fc.csb.app/" target="_blank"><img src="https://i.ibb.co/d0PMnWh/expense-tracker.png" alt="Expense Tracker Preview" width="500" height="500"></a>
 
 ---
 
@@ -104,6 +104,8 @@ Contributions are what make the open-source community such an amazing place to l
 5. Open a Pull Request
 
 ---
+
+### Demo link: https://zg63fc.csb.app/
 
 ## License
 
