@@ -12,7 +12,8 @@ interface ExpenseFormProps {
   addOrUpdateExpense: () => void;
   getCurrentDateString: () => string;
 }
-// ExpenseForm component is responsible for rendering the form and adding or editing an expense
+
+// Rendering the form and adding or editing an expense
 const ExpenseForm: React.FC<ExpenseFormProps> = ({
   name,
   price,
@@ -25,36 +26,58 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
   addOrUpdateExpense,
   getCurrentDateString,
 }) => {
+  const formRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
+  const lastFocusedElementRef = useRef<string | null>(null);
 
-  // Focus on name input when in editing mode
+  // Focus the name input when editing an expense
   useEffect(() => {
     if (editingId) {
       nameInputRef.current?.focus();
     }
   }, [editingId]);
 
-  // Focus on name input whenever a new item is successfully added
+  // Handle clicks outside the form
+  useEffect(() => {
+    const handleDocumentClick = (event: MouseEvent) => {
+      if (formRef.current && !formRef.current.contains(event.target as Node)) {
+        lastFocusedElementRef.current = null;
+      }
+    };
+
+    document.addEventListener("click", handleDocumentClick);
+
+    return () => {
+      document.removeEventListener("click", handleDocumentClick);
+    };
+  }, []);
+
   useEffect(() => {
     if (
       !editingId &&
       name === "" &&
       price === null &&
-      date === getCurrentDateString()
+      date === getCurrentDateString() &&
+      (lastFocusedElementRef.current === "nameInput" ||
+        lastFocusedElementRef.current === "priceInput")
     ) {
       nameInputRef.current?.focus();
     }
   }, [name, price, date, editingId, getCurrentDateString]);
 
-  // Add or update an existing expense when the user presses Enter
+  // Add or Update the expense when the user presses Enter
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && isFormValid) {
       addOrUpdateExpense();
     }
   };
 
+  const handleFocus = (id: string) => {
+    lastFocusedElementRef.current = id;
+  };
+
   return (
-    <div className="expenses-form">
+    <div ref={formRef} className="expenses-form">
       <div>
         <label htmlFor="nameInput" className="visually-hidden">
           Name
@@ -67,6 +90,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
           value={name}
           onChange={(e) => setName(e.target.value)}
           onKeyDown={handleKeyDown}
+          onFocus={() => handleFocus("nameInput")}
         />
       </div>
       <div>
@@ -81,6 +105,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
           value={price || ""}
           onChange={(e) => setPrice(Math.max(0, Number(e.target.value)))}
           onKeyDown={handleKeyDown}
+          onFocus={() => handleFocus("priceInput")}
         />
       </div>
       <div>
