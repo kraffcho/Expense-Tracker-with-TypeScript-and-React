@@ -2,6 +2,8 @@
 
 _An elegant and efficient Expense Tracker built with React and TypeScript_
 
+<img src="https://i.ibb.co/d0PMnWh/expense-tracker.png" alt="Expense Tracker Preview" width="500" height="500">
+
 ---
 
 ## Table of Contents
