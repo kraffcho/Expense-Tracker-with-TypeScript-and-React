@@ -2,7 +2,7 @@
 
 _An elegant and efficient Expense Tracker built with React and TypeScript_
 
-<a href="https://zg63fc.csb.app/" target="_blank"><img src="https://i.ibb.co/d0PMnWh/expense-tracker.png" alt="Expense Tracker Preview" width="500" height="500"></a>
+<a href="https://zg63fc.csb.app/" target="_blank"><img src="https://i.ibb.co/mDKnXwR/expense-tracker-dark.png" alt="Expense Tracker Preview" width="500" height="500"></a>
 
 ---
 
@@ -36,8 +36,9 @@ This project is an expense tracker that aims to provide a simple and efficient w
 ✅ Filter expenses by date  
 ✅ Sort by name, price, or date  
 ✅ Data persistence with local storage  
-✅ Display total expense amount  
-✅ Responsive design  
+✅ Display total expense amount (and filtered if any)  
+✅ Dark/Light theme toggle feature to improve user experience by allowing customization of the app's appearance  
+✅ Responsive design
 
 ---
 
