@@ -6,11 +6,13 @@ import { calculateTotalExpense } from "./utils/calculationUtil";
 import { getSortedAndFilteredExpenses } from "./utils/filterUtil";
 import { SortKey, SortOrder } from "./utils/enum";
 import { useLoading } from "./hooks/useLoading";
+import { useTheme } from "./hooks/useTheme";
 import ExpenseList from "./components/ExpenseList";
 import ExpenseForm from "./components/ExpenseForm";
 import SearchBar from "./components/SearchBar";
 import TotalExpense from "./components/TotalExpense";
 import SortOptions from "./components/SortOptions";
+import ConfettiComponent from "./components/ConfettiComponent";
 import "./App.scss";
 
 // Define the ExpenseItem interface for type safety
@@ -41,9 +43,32 @@ function App() {
   const [sortKey, setSortKey] = useState<SortKey>(SortKey.DATE);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isDarkMode, setIsDarkMode] = useState(savedTheme === "dark");
-  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
+  const [isDarkMode, setIsDarkMode] = useTheme();
+  const [confettiActive, setConfettiActive] = useState(false);
   const { isLoading, startLoading, stopLoading } = useLoading();
+
+  const confettiConfig = {
+    particleCount: 150,
+    spread: 50,
+    elementCount: 100,
+    startVelocity: 50,
+    dragFriction: 0.1,
+    duration: 4000,
+    stagger: 3,
+    width: "10px",
+    height: "10px",
+    perspective: "500px",
+    // colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
+  };
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+    setConfettiActive(true);
+     // Set a timer to disable confetti after a few seconds
+     setTimeout(() => {
+      setConfettiActive(false);
+    }, 2000);
+  };
 
   // Simulate loading for 1 second
   useEffect(() => {
@@ -54,23 +79,6 @@ function App() {
       stopLoading();
     }, 1000);
   }, [startLoading, stopLoading]);
-
-useEffect(() => {
-  // Load theme preference from localStorage or default to 'light'
-  const savedTheme = localStorage.getItem("theme") || "light";
-  const isDark = savedTheme === "dark";
-  setIsDarkMode(isDark);
-
-  // IMPORTANT: Set the attribute to make sure it's applied on initial load
-  document.documentElement.setAttribute("data-theme", savedTheme);
-}, []);
-
-  useEffect(() => {
-    // Save theme preference to localStorage
-    const theme = isDarkMode ? "dark" : "light";
-    localStorage.setItem("theme", theme);
-    document.documentElement.setAttribute("data-theme", theme);
-  }, [isDarkMode]);
 
   // Save expenses to localStorage whenever they change
   useEffect(() => {
@@ -259,6 +267,7 @@ useEffect(() => {
       <button className="toggle-theme" onClick={toggleDarkMode}>
         Dark Mode: {isDarkMode ? "On" : "Off"}
       </button>
+      <ConfettiComponent active={confettiActive} config={confettiConfig} />
     </div>
   );
 }

@@ -228,7 +228,7 @@ li {
   justify-content: space-between;
   padding: 6px 8px;
   line-height: 1;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--border-color);
 
   &.heading {
     padding: 10px 8px;
@@ -363,6 +363,14 @@ span[role="img"] {
   color: var(--text-color);
   background-color: var(--app-bg-color);
   cursor: pointer;
+}
+
+.confetti-wrapper {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
 }
 
 @media only screen and (max-width: 420px) {
