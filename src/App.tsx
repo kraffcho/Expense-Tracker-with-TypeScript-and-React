@@ -12,7 +12,7 @@ import ExpenseForm from "./components/ExpenseForm";
 import SearchBar from "./components/SearchBar";
 import TotalExpense from "./components/TotalExpense";
 import SortOptions from "./components/SortOptions";
-import ConfettiComponent from "./components/ConfettiComponent";
+import ConfettiWrapper from "./components/ConfettiWrapper";
 import "./App.scss";
 
 // Define the ExpenseItem interface for type safety
@@ -58,7 +58,6 @@ function App() {
     width: "10px",
     height: "10px",
     perspective: "500px",
-    // colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
   };
 
   const toggleDarkMode = () => {
@@ -267,7 +266,7 @@ function App() {
       <button className="toggle-theme" onClick={toggleDarkMode}>
         Dark Mode: {isDarkMode ? "On" : "Off"}
       </button>
-      <ConfettiComponent active={confettiActive} config={confettiConfig} />
+      <ConfettiWrapper active={confettiActive} config={confettiConfig} />
     </div>
   );
 }

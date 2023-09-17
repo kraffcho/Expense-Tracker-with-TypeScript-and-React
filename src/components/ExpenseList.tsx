@@ -26,30 +26,15 @@ const ExpenseList: React.FC<ExpenseListProps> = ({
         <span>Actions</span>
       </li>
       {expenses.map((expense) => (
-        <li
-          key={expense.id}
-          className={itemsBeingDeleted.includes(expense.id) ? "fade-out" : ""}
-        >
+        <li key={expense.id} className={itemsBeingDeleted.includes(expense.id) ? "fade-out" : ""}>
           <span>{expense.name}</span>
           <span>${expense.price}</span>
           <span onClick={() => onDateFilter(expense.date)} className="date">
             {formatDateUtil(expense.date)}
           </span>
           <span>
-            <span
-              role="img"
-              aria-label="Edit Expense"
-              onClick={() => onEdit(expense.id)}
-            >
-              ✏️
-            </span>
-            <span
-              role="img"
-              aria-label="Delete Expense"
-              onClick={() => onDelete(expense.id)}
-            >
-              🗑️
-            </span>
+            <span role="img" aria-label="Edit Expense" onClick={() => onEdit(expense.id)} >✏️</span>
+            <span role="img" aria-label="Delete Expense" onClick={() => onDelete(expense.id)} >🗑️</span>
           </span>
         </li>
       ))}

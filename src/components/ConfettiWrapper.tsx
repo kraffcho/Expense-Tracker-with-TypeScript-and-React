@@ -1,12 +1,12 @@
 import React from "react";
 import Confetti from "react-dom-confetti";
 
-interface ConfettiComponentProps {
+interface ConfettiWrapperProps {
   active: boolean;
   config: object;
 }
 
-const ConfettiComponent: React.FC<ConfettiComponentProps> = ({
+const ConfettiWrapper: React.FC<ConfettiWrapperProps> = ({
   active,
   config,
 }) => {
@@ -17,4 +17,4 @@ const ConfettiComponent: React.FC<ConfettiComponentProps> = ({
   );
 };
 
-export default ConfettiComponent;
+export default ConfettiWrapper;

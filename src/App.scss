@@ -11,8 +11,10 @@
   --input-bg-color: #fff;
   --input-text-color: #000;
   --input-select-outline-color: #007bff;
+  --input-select-box-shadow: none;
   --border-color: #ccc;
   --button-action-bg-color: #fff;
+  --button-action-border-color: #ddd;
   --button-disabled-bg-color: #ccc;
   --button-disabled-border-color: #888;
   --button-toggle-theme-bg-color: #fff;
@@ -32,8 +34,10 @@
   --input-bg-color: #333;
   --input-text-color: #fff;
   --input-select-outline-color: #111;
+  --input-select-box-shadow: 0 2px 5px #111;
   --border-color: #555;
   --button-action-bg-color: #222;
+  --button-action-border-color: #000;
   --button-disabled-bg-color: #1d1d1d;
   --button-disabled-border-color: #555;
   --button-toggle-theme-bg-color: #333;
@@ -50,7 +54,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--bg-color);
   color: var(--text-color);
-  transition: 300ms ease-out;
+  transition: 300ms;
 }
 
 .App {
@@ -126,6 +130,7 @@ button,
 select {
   background: var(--input-bg-color);
   color: var(--input-text-color);
+  box-shadow: var(--input-select-box-shadow);
   font-family: "Saira Condensed", sans-serif;
 }
 
@@ -271,8 +276,8 @@ span[role="img"] {
   flex: 1;
   font-size: .7em;
   background: var(--button-action-bg-color);
-  padding: 4px 2px;
-  border: 1px solid #ddd;
+  padding: 5px 2px;
+  border: 1px solid var(--button-action-border-color);
   border-radius: 4px;
   text-align: center;
   transition: 300ms;
@@ -296,6 +301,9 @@ span[role="img"] {
   gap: 10px;
   margin: 0;
   line-height: 1;
+  button { 
+    min-width: 100px;
+  }
 }
 
 .visually-hidden {

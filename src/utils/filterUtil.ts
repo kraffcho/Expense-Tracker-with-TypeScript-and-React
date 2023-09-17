@@ -1,7 +1,6 @@
 import { ExpenseItem } from "../App";
 import { SortKey, SortOrder } from "./enum";
 
-// utils/filterUtil.ts
 export const getSortedAndFilteredExpenses = (
   expenses: ExpenseItem[],
   searchQuery: string,
